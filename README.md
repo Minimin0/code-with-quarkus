@@ -20,12 +20,3 @@
 실습 12 : 반응형 시스템 사양 표를 추가하며 서브 페이지 완성도 높이기
 
 <div align="center">
-• 프로젝트 폴더 최상위
-• screenshots 생성
-• 스크린샷 이미지 저장
-<img src="screenshots/2026-01-26 오전 9_51_43.png" width="45%" alt="실습 1 화면">
-<img src="screenshots/파일명.png" width="45%" alt="실습 2 화면">
-</div>
-<br>
-## x주차 수업 내용
-테스트
