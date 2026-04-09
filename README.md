@@ -37,7 +37,7 @@ download.css 파일로 스타일 분리하기
 배경 이미지와 Flexbox 적용하기  
 반응형 시스템 사양 표 추가하기  
 
-![alt text](5week1.png)
+![alt text](5week1.jpeg)
 ![alt text](5week2.png)
 ![alt text](5week3.png)
 
