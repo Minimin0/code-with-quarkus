@@ -1,5 +1,6 @@
 # quarkus 프로젝트 시작! (학번 : 20231028 이름 :최민 )
 매 주 수업 내용을 정리하자.
+
 ## 2, 3주차 수업 내용
 실습 1 : 쿼크스 환경 구축 및 준비 완료!
 실습 2 : HTML 기본 및 LOL 메인 화면 개발 완료!
@@ -39,6 +40,19 @@ download.css 파일로 스타일 분리하기
 ![alt text](5week1.png)
 ![alt text](5week2.png)
 ![alt text](5week3.png)
+
+
+## 6주차 수업 내용
+재할당 해야하는건 let, 상수 즉 원주율 같은(3.14)같은 애들은 const를 사용
+자바스크립트의 역할과 웹에서의 동작 방식 이해하기
+Bootstrap JS 연결 방식과 script 태그 사용법 익히기
+var, let, const 차이와 호이스팅 개념 배우기
+검색 기능 준비하기
+form, submit, preventDefault를 활용
+DOM 구조이해하기
+![alt text](6week1.png)
+![alt text](6week2.png)
+
 
 
 
