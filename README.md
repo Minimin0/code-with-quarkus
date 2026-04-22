@@ -54,6 +54,15 @@ DOM 구조이해하기
 ![alt text](6week2.png)
 
 
+## 7주차 수업 내용
+검색창에 검색시 구글로 이동하여 검색하게 했었는데 파일 내 serch.js 파일을 사용하여 파일 내에서 검색하도록 만듬
+(롤 기능 구현하기 코드를 잘 확인하면 시험에 좋다.)
+![alt text](7week1.png)
+![alt text](7week2.png)
+
+---
+## 7주차 실습 과제
+
 
 
 <div align="center">
