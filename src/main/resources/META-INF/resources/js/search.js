@@ -13,6 +13,9 @@ const CHAMPIONS = [
     { name: '브라이어', engName: 'Briar', role: '전사', lane: '정글', img: 'https://ddragon.leagueoflegends.com/cdn/15.24.1/img/champion/Briar.png', difficulty: '중' },
     { name: '잭스', engName: 'Jax', role: '전사', lane: '탑', img: 'https://ddragon.leagueoflegends.com/cdn/15.24.1/img/champion/Jax.png', difficulty: '하' },
     { name: '징크스', engName: 'Jinx', role: '원거리딜러', lane: '원딜', img: 'https://ddragon.leagueoflegends.com/cdn/15.24.1/img/champion/Jinx.png', difficulty: '중' },
+    { name: '멜', engName: 'Mel', role: '원거리딜러', lane: '서포터', img: 'image/mel.jpeg', difficulty: '상' },
+    { name: '자헨', engName: 'Zaahen', role: '전사', lane: '탑', img: 'image/jahen.jpeg', difficulty: '상' },
+    { name: '유나라', engName: 'Yunara', role: '원거리딜러', lane: '바텀', img: 'image/yunara.jpeg', difficulty: '중' },
 ];
 
 // --- 뉴스 데이터 ------------------------------

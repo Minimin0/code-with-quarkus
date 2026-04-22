@@ -62,6 +62,10 @@ DOM 구조이해하기
 
 ---
 ## 7주차 실습 과제
+새로운 챔피언 추가 검색기능으로 찾을 수 있음
+![alt text](7week3.png)
+![alt text](7week4.png)
+![alt text](7week5.png)
 
 
 
