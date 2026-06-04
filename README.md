@@ -186,4 +186,62 @@ DOM 구조이해하기
 
 ---
 
+## 10주차 수업 내용 — 로그인과 로그아웃 (세션 기반)
+
+### PART 1. 트렌드 / 이론 (웹 보안 · 인증 방식)
+- **최근 보안 사고**: 세션 쿠키 탈취로 인한 유튜브 채널 대규모 해킹, npm 공급망 공격(인포스틸러가 브라우저 세션 쿠키·계정 탈취) 등 — 비밀번호 없이도 세션만 있으면 접속이 가능해지는 위험.
+- **세션 vs 토큰**
+
+| 구분 | 세션 방식 (Session) | 토큰 방식 (JWT) |
+|------|--------------------|-----------------|
+| 저장 위치 | 서버 (메모리) | 클라이언트(브라우저) |
+| 확장성 | 낮음(서버 부담) | 높음(stateless) |
+| 특징 | 서버가 상태 직접 관리, 클라이언트는 세션 ID(쿠키)만 보유 | 탈취 시 위험 |
+
+- HTTP는 **무상태(stateless)** 라서 정보가 유지되지 않음 → 서버가 세션으로 상태를 관리하고, 브라우저에는 세션 식별자만 쿠키로 보관. (이번 주는 **세션 기반**으로 구현)
+
+### PART 2. 도메인 패키지 구조
+기능별로 폴더를 나누는 **도메인형 구조**로 정리 (계층형보다 응집도↑, 충돌↓):
+```
+org.acme/
+├── champion/   Champion.java, ChampionResource.java   (챔피언)
+├── common/     DataSeeder.java                          (초기 데이터)
+└── login/      User.java, AuthResource.java, SessionConfig.java  (로그인/세션)
+```
+
+### PART 3. 로그인 / 로그아웃 구현
+- **네비게이션 바**: 메인 `Index.html`의 로그인 링크를 `href="/login"`(파일명이 아니라 **엔드포인트 경로**)으로 연결 → 반드시 백엔드를 경유.
+- **`User.java` (엔티티)**: `@Entity @Table(name="users")`(예약어 `user` 충돌 방지), `username`/`password`, `findByUsername()` 정적 메서드(Panache Active Record).
+- **`DataSeeder.java`**: 임시 사용자 `guest / 123123` 삽입(`User.count()==0`일 때).
+- **`SessionConfig.java`**: Vert.x `Router`에 `SessionHandler` 등록(세션 기능 활성화). 세션 1시간 + `HttpOnly` 쿠키 플래그.
+- **`AuthResource.java` (핵심 엔드포인트)**
+
+| 메서드 / 경로 | HTTP | 동작 |
+|---------------|------|------|
+| `loginPage()` `/login` | GET | `login.html` 반환 |
+| `loginCheck()` `/login_check` | POST | `@FormParam`으로 아이디/비번 수신 → DB 조회(`findByUsername`) → 일치하면 `session.put("loginUser")` 후 **303**으로 `/after_login` 이동, 실패 시 `/login?error=1` |
+| `afterLogin()` `/after_login` | GET | **세션 체크**(없으면 `/login`으로 강제 차단 = Forced Browsing 방지), 있으면 `main_after_login.html` 반환 |
+| `logout()` `/logout` | GET | `session().destroy()`로 세션 전체 삭제 후 `/`로 이동 |
+
+- **HTTP 상태코드**: 200(성공) / 302(이동, 메서드 유지) / **303 See Other**(POST→GET 전환, 로그인 후 이동에 사용) / 404 / 5xx.
+- **로그인 후 페이지(`main_after_login.html`)**: 기존 메인 화면을 재활용하되, 네비바의 로그인 링크를 **로그아웃 버튼(`/logout`)** 으로 교체.
+
+### PART 4. 마무리 & 과제
+- ✅ **과제 — 로그인 페이지 다크/라이트 모드**: 로그인 페이지의 토글이 동작하지 않던 문제(버튼의 인라인 `onclick`과 `toggle.js`의 이벤트 리스너가 **이중 실행**되어 서로 상쇄)를 해결. 인라인 `onclick`을 제거해 리스너 한 번만 실행되도록 통일 → 로그인 페이지에서도 다크/라이트 전환 정상 동작.
+
+---
+
+## 10주차 실제 실행 화면 (http://localhost:8080/)
+
+**① 로그인 페이지 (`/login`)**
+![로그인 페이지](screenshots/week10_01_login.png)
+
+**② 로그인 페이지 라이트 모드 (과제)**
+![로그인 라이트 모드](screenshots/week10_02_login_light.png)
+
+**③ 로그인 성공 후 페이지 (`/after_login`, 세션 인증 · 로그아웃 버튼)**
+![로그인 후 페이지](screenshots/week10_03_after_login.png)
+
+---
+
 <div align="center">
