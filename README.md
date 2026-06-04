@@ -244,4 +244,57 @@ org.acme/
 
 ---
 
+## 11주차 수업 내용 — 회원가입 & 암호화(SHA-256)
+
+### PART 1. 트렌드 / 이론 (해시 암호화)
+- **보안 사고**: 2024 인터파크 DB 해킹(1,030만 명 유출) — 주원인은 **패스워드 평문 저장**과 약한 암호화(MD5).
+- **해시(단방향 암호화)**: 암호화만 가능하고 **복호화 불가**. 같은 입력은 항상 같은 해시값(결정론적). DB가 해킹돼도 원본 비밀번호 복구 불가.
+
+| 알고리즘 | 길이 | 평가 |
+|----------|------|------|
+| MD5 | 128bit | 취약 ❌ |
+| SHA-1 | 160bit | 취약 ❌ |
+| **SHA-256** | 256bit | 적합 ✅ (오늘 실습) |
+| bcrypt | 가변 | 강력(salt 포함, 실무) |
+
+### PART 2. 회원가입 구현
+- **`login.html`**: 로그인 버튼 아래에 **회원가입 버튼**(`/register`) 추가.
+- **`User.java`**: `email`(`@Column(unique=true)` 중복 방지), `phone` 컬럼 추가 + `findByEmail()` 메서드. `DataSeeder`도 guest에 email/phone 추가.
+- **`register.html` (신규)**: 회원가입 폼(아이디·패스워드·패스워드 확인·이메일·연락처) + 가입 확인 모달.
+- **`AuthResource.java` 엔드포인트 추가**
+
+| 메서드 / 경로 | HTTP | 동작 |
+|---------------|------|------|
+| `registerPage()` `/register` | GET | `register.html` 반환 |
+| `registerCheck()` `/register_check` | POST | 아이디·이메일 **중복 체크** → 통과 시 DB 삽입(해시 저장) → `/register_success`. 중복 시 `/register?error=duplicate_username`(또는 `_email`) |
+| `registerSuccess()` `/register_success` | GET | `register_success.html`(가입 완료) 반환 |
+
+### PART 3. 암호화 (SHA-256) — 클라이언트 측 해싱
+- **`js/input_check.js` (신규)**: 정규식 유효성 검사
+  - 아이디 `^[a-zA-Z0-9]{4,20}$`, 패스워드 `^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$`, 패스워드 확인 일치, 이메일, 연락처 `^010-\d{4}-\d{4}$`
+  - 통과 시 `showConfirmModal()` 호출, 서버 중복 에러는 `?error=` 파라미터로 표시.
+- **`js/input_sha256.js` (신규)**: 브라우저 내장 **Web Crypto API**(`crypto.subtle.digest('SHA-256', ...)`)로 패스워드를 해시 → hidden 필드(`name="password"`)에 저장 → 확인 모달 표시 → `submitRegister()`로 폼 전송.
+- 결과: **서버에는 평문이 아닌 SHA-256 해시값만 전송·저장**된다. (DB의 `password` 컬럼 = 64자리 해시)
+
+### PART 4. 마무리 & 과제
+- ✅ **과제 — 로그인 화면 입력값 검사(`js/login.js`)**: 회원가입의 검증 로직을 참고해 `validateAndLogin()` 구현(아이디·패스워드 정규식). `login.html`의 입력 필드에 `usernameInput`/`passwordInput` id를 부여하고 로그인 버튼을 `validateAndLogin()` → `submitLogin()` 흐름으로 변경. (※ register의 `showError`는 파라미터 2개, login은 메시지 id까지 받는 3개 — 힌트의 "파라미터 개수가 틀림")
+
+---
+
+## 11주차 실제 실행 화면 (http://localhost:8080/)
+
+**① 회원가입 폼 (`/register`)**
+![회원가입 폼](screenshots/week11_01_register.png)
+
+**② 가입 확인 모달 — 입력 정보 확인, 패스워드는 해시로 암호화 전송**
+![가입 확인 모달](screenshots/week11_02_confirm_modal.png)
+
+**③ 가입 완료 페이지 (`/register_success`)**
+![가입 완료](screenshots/week11_03_register_success.png)
+
+**④ 로그인 페이지 — 회원가입 버튼 추가 & 입력값 검증(과제)**
+![로그인 페이지](screenshots/week11_04_login.png)
+
+---
+
 <div align="center">

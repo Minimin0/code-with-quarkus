@@ -19,6 +19,8 @@ public class DataSeeder {
             User guest = new User();
             guest.username = "guest";
             guest.password = "123123";
+            guest.email = "guest@example.com"; // [11주차] 컬럼 추가
+            guest.phone = "010-0000-0000";     // [11주차] 컬럼 추가
             guest.persist();
         }
         // CDI 표준, 이벤트
