@@ -1,5 +1,7 @@
-/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/Champion.java
-/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/ChampionResource.java
-/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/DataSeeder.java
 /Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/GreetingResource.java
 /Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/StartWebSocket.java
+/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/champion/Champion.java
+/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/champion/ChampionResource.java
+/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/common/DataSeeder.java
+/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/login/AuthResource.java
+/Users/choimin/Documents/JavaWebStudy/code-with-quarkus/src/main/java/org/acme/login/User.java

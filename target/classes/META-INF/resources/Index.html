@@ -148,7 +148,7 @@
 
             <div class="col">
   <div class="card bg-dark text-white border-secondary h-100">
-    <img src="image/a1.jpeg" class="card-img-top" alt="아트록스">
+    <img src="image/Aatrox.jpeg" class="card-img-top" alt="아트록스">
 
     <div class="card-body">
       <h5 class="card-title">아트록스 (Aatrox)</h5>
@@ -246,10 +246,41 @@ allowfullscreen>
             <!-- Mel -->
             <div class="col-md-6 col-lg-4 col-xl-2">
                 <div class="card text-center h-100">
-                    <img src="https://www.leagueoflegends.com/ko-kr/champions/mel/" class="card-img-top" alt="Mel" loading="lazy">
+                    <img src="image/Mell.jpeg" class="card-img-top" alt="Mel" loading="lazy">
                     <div class="card-body">
                         <h5 class="card-title accent-red">Mel (마법사)</h5>
                         <p class="card-text">마법으로 적을 물리치세요.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <button
+                            class="btn btn-outline-light w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalMell"
+                            data-champ="Mell">
+                            상세 보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 모달 (iframe으로 Mell.html 불러오기) -->
+            <div class="modal fade" id="modalMell" tabindex="-1" aria-labelledby="modalMellLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content bg-dark text-white border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title" id="modalMellLabel">멜 (Mel) 상세 정보</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-0" style="height: 65vh; background: #0a0e17;">
+                            <iframe
+                                src="modals/Mell.html"
+                                frameborder="0"
+                                style="width: 100%; height: 100%; border: none;"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">닫기</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -257,20 +288,83 @@ allowfullscreen>
             <!-- Yunara -->
             <div class="col-md-6 col-lg-4 col-xl-2">
                 <div class="card text-center h-100">
-                    <img src="https://www.leagueoflegends.com/ko-kr/champions/yunara/" class="card-img-top" alt="Yunara" loading="lazy">
+                    <img src="image/Yunara.jpg" class="card-img-top" alt="Yunara" loading="lazy">
                     <div class="card-body">
                         <h5 class="card-title accent-red">Yunara (원거리)</h5>
                         <p class="card-text">초월을 경험하세요.</p>
                     </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <button
+                            class="btn btn-outline-light w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalYunara"
+                            data-champ="Yunara">
+                            상세 보기
+                        </button>
+                    </div>
                 </div>
             </div>
+            <!-- 모달 (iframe으로 Yunara.html 불러오기) -->
+            <div class="modal fade" id="modalYunara" tabindex="-1" aria-labelledby="modalYunaraLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content bg-dark text-white border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title" id="modalYunaraLabel">유나라 (Yunara) 상세 정보</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-0" style="height: 65vh; background: #0a0e17;">
+                            <iframe
+                                src="modals/Yunara.html"
+                                frameborder="0"
+                                style="width: 100%; height: 100%; border: none;"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Zaahen -->
             <div class="col-md-6 col-lg-4 col-xl-2">
                 <div class="card text-center h-100">
-                    <img src="https://www.leagueoflegends.com/ko-kr/champions/zaahen/" class="card-img-top" alt="Zaahen" loading="lazy">
+                    <img src="image/Zaahen.jpg" class="card-img-top" alt="Zaahen" loading="lazy">
                     <div class="card-body">
                         <h5 class="card-title accent-red">Zaahen (탑)</h5>
                         <p class="card-text">다르킨을 사냥하세요.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <button
+                            class="btn btn-outline-light w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalZaahen"
+                            data-champ="Zaahen">
+                            상세 보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 모달 (iframe으로 Zaahen.html 불러오기) -->
+            <div class="modal fade" id="modalZaahen" tabindex="-1" aria-labelledby="modalZaahenLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content bg-dark text-white border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title" id="modalZaahenLabel">자헨 (Zaahen) 상세 정보</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-0" style="height: 65vh; background: #0a0e17;">
+                            <iframe
+                                src="modals/Zaahen.html"
+                                frameborder="0"
+                                style="width: 100%; height: 100%; border: none;"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">닫기</button>
+                        </div>
                     </div>
                 </div>
             </div>

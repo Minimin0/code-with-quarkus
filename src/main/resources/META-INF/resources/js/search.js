@@ -27,7 +27,10 @@ const NEWS = [
 // ---- 검색 실행 ------------------------------
 function performSearch(query) {
     const q = query.trim().toLowerCase();
-    if (!q) return;
+    if (!q) {              // 검색어가 없거나 공백이면 메인 화면으로 복귀
+        showMainScreen();
+        return;
+    }
 
     document.getElementById('searchKeywordDisplay').textContent = `"${query}"`;
 
@@ -94,6 +97,25 @@ function switchCategory(type, el) {
     el.classList.add('active');
     document.getElementById('resultChampion').style.display = type === 'champion' ? 'block' : 'none';
     document.getElementById('resultNews').style.display = type === 'news' ? 'block' : 'none';
+}
+
+// ── 메인 화면으로 복귀 ───────────────────────────────────────
+// 검색어가 없거나 공백일 때 호출. 검색 결과 섹션을 숨기고
+// 히어로 + 기존 섹션(챔피언/뉴스 등)을 다시 보여준다.
+function showMainScreen() {
+    // 검색 결과 섹션 숨김
+    const results = document.getElementById('searchResults');
+    results.classList.add('d-none');
+    results.style.display = 'none';
+
+    // 히어로 섹션 다시 표시
+    document.querySelector('.hero').classList.remove('d-none');
+
+    // 검색 결과를 제외한 나머지 섹션 다시 표시
+    document.querySelectorAll('section:not(#searchResults)').forEach(s => s.classList.remove('d-none'));
+
+    // 검색창 비우기
+    document.getElementById('searchInput').value = '';
 }
 
 // ── 폼 이벤트 ────────────────────────────────────────────────
