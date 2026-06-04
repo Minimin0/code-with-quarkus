@@ -68,10 +68,77 @@
                 </div>
                 <button type="submit" class="btn btn-primary w-100">사진 업로드</button>
             </form>
+
+            <!-- 업로드 오류 메시지 -->
+            <div id="uploadErrorMsg" class="alert alert-danger d-none mt-3"></div>
+
+            <hr class="my-4">
+
+            <!-- ===== [13주차] 개인정보 수정 (Collapse) ===== -->
+            <button class="btn btn-warning w-100 mb-2" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#updateFormArea" aria-expanded="false">
+                개인정보 수정
+            </button>
+            <div class="collapse" id="updateFormArea">
+                <div class="card card-body bg-dark text-white border-secondary mt-2">
+                    <div id="updateMsg" class="alert d-none mb-3"></div>
+                    <form id="updateForm" method="POST" action="/profile/update">
+                        <div class="mb-3 text-start">
+                            <label class="form-label">이메일</label>
+                            <input type="text" class="form-control" id="updateEmail" name="email" placeholder="example@email.com">
+                            <div class="invalid-feedback" id="updateEmailMsg"></div>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label class="form-label">연락처</label>
+                            <input type="text" class="form-control" id="updatePhone" name="phone" placeholder="010-0000-0000">
+                            <div class="invalid-feedback" id="updatePhoneMsg"></div>
+                        </div>
+                        <button type="button" class="btn btn-warning w-100" onclick="validateAndUpdate()">수정 완료</button>
+                    </form>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ===== [13주차] 비밀번호 변경 ===== -->
+            <h5 class="fw-bold mb-3">🔒 비밀번호 변경</h5>
+            <div id="pwMsg" class="alert d-none mb-3"></div>
+            <form id="pwForm" method="POST" action="/profile/password">
+                <div class="mb-3 text-start">
+                    <label class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="currentPwInput" placeholder="현재 비밀번호 입력" required>
+                    <div class="invalid-feedback" id="currentPwMsg"></div>
+                    <input type="hidden" id="currentPassword" name="currentPassword">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label">새 비밀번호</label>
+                    <input type="password" class="form-control" id="newPwInput" placeholder="8자 이상, 영문+숫자+특수문자" required>
+                    <div class="invalid-feedback" id="newPwMsg"></div>
+                    <input type="hidden" id="newPassword" name="newPassword">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label">새 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="newPwConfirm" placeholder="새 비밀번호 재입력" required>
+                    <div class="invalid-feedback" id="newPwConfirmMsg"></div>
+                </div>
+                <button type="button" class="btn btn-danger w-100" onclick="validateAndChangePassword()">비밀번호 변경</button>
+            </form>
         </div>
     </section>
 
+    <!-- [13주차] Toast 컨테이너 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastBody">메시지</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- JS 연동 -->
+    <script src="../js/test.js"></script>
+    <script src="../js/input_sha256.js"></script>
     <script src="../js/toggle.js"></script>
     <script src="../js/Profile.js"></script>
 </body>

@@ -511,4 +511,92 @@ public Response profileUpload(@RestForm("profileImage") FileUpload file) {
 
 ---
 
+## 13주차 수업 내용 — 회원정보 수정 / 비밀번호 변경 + Toast
+
+### PART 1. 트렌드 / 이론 (개인정보 보호)
+- 2025 개인정보 유출(쿠팡·SKT 등) — 평문/약한 암호화 저장이 피해를 키움. 민감정보(주민번호·금융·의료)와 결합 가능 정보의 위험, AI 시대의 노출/악용(딥페이크·보이스피싱) 이슈. → **외부 전송 최소화·로컬 처리** 등 프라이버시 보호 방향.
+
+### PART 2-1. 프론트 개선 — Toast 알림 & 사용자명 표시
+- 브라우저 기본 `alert()`(화면 차단)을 **Bootstrap Toast**(비방해형, 자동 사라짐)로 교체.
+- `js/test.js`에 `showToast(message, type)` 함수 추가, 각 페이지에 **Toast 컨테이너** HTML 삽입.
+- 네비바 프로필 링크에 **Tooltip**으로 로그인 사용자명 표시(`Profile.js`가 `/profile/info`를 fetch 후 `data-bs-title` 동적 설정).
+
+### PART 2-2. 회원정보 수정 (이메일·연락처)
+- `profile.html`: Bootstrap **Collapse**로 "개인정보 수정" 폼을 접기/펼치기. 폼에는 기존 값이 자동으로 채워짐.
+- `Profile.js`: `validateAndUpdate()` — 이메일/연락처 정규식 검사 후 전송. 결과는 `?success=updated` / `?error=duplicate_email` 파라미터로 메시지 표시.
+- `AuthResource.profileUpdate()` (`POST /profile/update`): 세션 체크 → **이메일 중복(본인 제외) 체크** → DB 업데이트.
+
+### PART 2-3. 비밀번호 변경 (+ 변경 후 자동 로그아웃)
+- `profile.html`: 현재/새/새 확인 비밀번호 폼(입력값은 보이는 필드, 전송은 **해시 hidden 필드**).
+- `Profile.js`: `validateAndChangePassword()` — 현재 비번 입력 체크 + 새 비번 정규식 + 일치 검사 → **현재·새 비번 모두 SHA-256 해시** 후 전송.
+- `AuthResource.profilePassword()` (`POST /profile/password`): 현재 비번 해시 비교 → 일치 시 새 해시로 DB 업데이트(`?success=password_changed`), 불일치 시 `?error=wrong_password`.
+- 변경 성공 시 Toast 후 **3.5초 뒤 자동 로그아웃** → `logout(@QueryParam("next"))`가 `?next=login`이면 `/login`으로 이동.
+
+### PART 3. 마무리 & 과제
+- ✅ **과제 — alert 전체 Toast 교체**: `main_index.html`(로딩/무료플레이), `main_after_login.html`(로그인 성공!/무료플레이), `register.html`·`register_success.html`(페이지 로딩/가입 완료)의 alert를 모두 `showToast()`로 교체, `login.html`은 로딩 alert 제거.
+- ✅ **마무리 정리**: 중복 `window.onload` alert 제거, 네비바/스크립트 로드 순서·상대경로 점검.
+
+## 13주차 핵심 코드
+**Toast 함수 (`js/test.js`)**
+```js
+function showToast(message, type = 'success') {       // type: success/danger/warning
+    const toastEl = document.getElementById('liveToast');
+    const toastBody = document.getElementById('toastBody');
+    if (!toastEl || !toastBody) return;
+    toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+    toastBody.textContent = message;
+    new bootstrap.Toast(toastEl, { delay: 3000 }).show();   // 3초 후 자동 사라짐
+}
+```
+**비밀번호 변경 — 검증 + 해시 (`js/Profile.js`)**
+```js
+async function validateAndChangePassword() {
+    /* 현재 비번 빈값·새 비번 정규식·새 비번 일치 검사 ... valid 판정 */
+    if (!valid) return;
+    document.getElementById('currentPassword').value = await hashPassword(currentPw); // 해시
+    document.getElementById('newPassword').value     = await hashPassword(newPw);     // 해시
+    document.getElementById('pwForm').submit();
+}
+```
+**회원정보 수정 / 비번 변경 엔드포인트 (`login/AuthResource.java`)**
+```java
+@POST @Path("/profile/update") @Transactional
+public Response profileUpdate(@FormParam("email") String email, @FormParam("phone") String phone) {
+    String loginUser = context.session().get("loginUser");
+    if (loginUser == null) return Response.seeOther(URI.create("/login")).build();
+    User found = User.findByEmail(email);                          // 이메일 중복(본인 제외)
+    if (found != null && !found.username.equals(loginUser))
+        return Response.seeOther(URI.create("/profile?error=duplicate_email")).build();
+    User user = User.findByUsername(loginUser);
+    user.email = email; user.phone = phone;                       // DB 업데이트
+    return Response.seeOther(URI.create("/profile?success=updated")).build();
+}
+
+@POST @Path("/profile/password") @Transactional
+public Response profilePassword(@FormParam("currentPassword") String cur,
+                                @FormParam("newPassword") String neo) {
+    User user = User.findByUsername(context.session().get("loginUser"));
+    if (!user.password.equals(cur))                               // 현재 비번 해시 비교
+        return Response.seeOther(URI.create("/profile?error=wrong_password")).build();
+    user.password = neo;                                          // 새 해시로 변경
+    return Response.seeOther(URI.create("/profile?success=password_changed")).build();
+}
+
+@GET @Path("/logout")
+public Response logout(@QueryParam("next") String next) {         // ?next=login → /login
+    context.session().destroy();
+    return Response.seeOther(URI.create("login".equals(next) ? "/login" : "/")).build();
+}
+```
+
+## 13주차 실제 실행 화면 (http://localhost:8080/)
+
+**① Toast 알림 — 로그인 성공!(자동 사라지는 비방해형 알림)**
+![Toast 알림](screenshots/week13_01_toast.png)
+
+**② 프로필 — 개인정보 수정(Collapse) + 비밀번호 변경 폼**
+![회원정보 수정/비번 변경](screenshots/week13_02_profile_forms.png)
+
+---
+
 <div align="center">

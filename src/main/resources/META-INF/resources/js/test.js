@@ -41,3 +41,16 @@ console.log(testLet); // ReferenceError
 let testLet = 200;
 console.log(testConst); // ReferenceError
 const testConst = 300;
+
+
+// [13주차] 브라우저 기본 alert() 대신 사용할 Bootstrap Toast 알림 (비방해형)
+function showToast(message, type = 'success') {
+    // type : 'success'(초록) / 'danger'(빨강) / 'warning'(노랑)
+    const toastEl = document.getElementById('liveToast');
+    const toastBody = document.getElementById('toastBody');
+    if (!toastEl || !toastBody) return;
+    toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+    toastBody.textContent = message;
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+}

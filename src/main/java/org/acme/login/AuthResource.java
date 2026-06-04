@@ -88,15 +88,13 @@ public class AuthResource {
         return Response.ok(html).build();
     }
 
-    // GET /logout → 세션 초기화 후 메인 이동
+    // GET /logout → 세션 초기화 후 이동 ([13주차] ?next=login 이면 로그인 페이지로)
     @GET
     @Path("/logout")
-    public Response logout() {
-        System.out.println("=== 로그아웃 전 세션 ID : " + context.session().id());
-        System.out.println("=== 로그아웃 전 loginUser : " + context.session().get("loginUser"));
+    public Response logout(@QueryParam("next") String next) {
         context.session().destroy(); // 서버의 세션 데이터 전체 삭제
-        System.out.println("=== 로그아웃 후 loginUser : " + context.session().get("loginUser"));
-        return Response.seeOther(URI.create("/")).build();
+        String redirect = (next != null && next.equals("login")) ? "/login" : "/";
+        return Response.seeOther(URI.create(redirect)).build();
     }
 
     // ===== [11주차] 회원가입 =====
@@ -236,5 +234,49 @@ public class AuthResource {
         } catch (Exception e) {
             return Response.seeOther(URI.create("/profile?error=upload_fail")).build();
         }
+    }
+
+    // [13주차] POST /profile/update → 회원정보(이메일/연락처) 수정
+    @POST
+    @Path("/profile/update")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response profileUpdate(@FormParam("email") String email,
+                                  @FormParam("phone") String phone) {
+        String loginUser = context.session().get("loginUser");
+        if (loginUser == null) {
+            return Response.seeOther(URI.create("/login")).build();
+        }
+        // 이메일 중복 체크 (본인 제외)
+        User found = User.findByEmail(email);
+        if (found != null && !found.username.equals(loginUser)) {
+            return Response.seeOther(URI.create("/profile?error=duplicate_email")).build();
+        }
+        // DB 업데이트
+        User user = User.findByUsername(loginUser);
+        user.email = email;
+        user.phone = phone;
+        return Response.seeOther(URI.create("/profile?success=updated")).build();
+    }
+
+    // [13주차] POST /profile/password → 비밀번호 변경 (해시값 비교/저장)
+    @POST
+    @Path("/profile/password")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response profilePassword(@FormParam("currentPassword") String currentPassword,
+                                    @FormParam("newPassword") String newPassword) {
+        String loginUser = context.session().get("loginUser");
+        if (loginUser == null) {
+            return Response.seeOther(URI.create("/login")).build();
+        }
+        // 현재 비밀번호 확인 (해시값 비교)
+        User user = User.findByUsername(loginUser);
+        if (!user.password.equals(currentPassword)) {
+            return Response.seeOther(URI.create("/profile?error=wrong_password")).build();
+        }
+        // 새 비밀번호로 DB 업데이트
+        user.password = newPassword;
+        return Response.seeOther(URI.create("/profile?success=password_changed")).build();
     }
 }
