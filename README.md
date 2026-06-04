@@ -1,55 +1,115 @@
 # quarkus 프로젝트 시작! (학번 : 20231028 이름 :최민 )
 매 주 수업 내용을 정리하자.
 
-## 2, 3주차 수업 내용
-실습 1 : 쿼크스 환경 구축 및 준비 완료!
-실습 2 : HTML 기본 및 LOL 메인 화면 개발 완료!
-• 스크린샷 폴더 생성
+## 2, 3주차 수업 내용 — 개발 환경 구축 & HTML/CSS 기초
+> 실습 1 : 쿼크스 환경 구축 및 준비 완료! / 실습 2 : HTML 기본 및 LOL 메인 화면 개발 완료! (• 스크린샷 폴더 생성)
 
-## 4주차 수업 내용
-실습 1 : Bootstrap 5 연결하고 HTML 문서 구조 제대로 이해하기
-실습 2 : 태그와 class의 차이를 구분하며 LOL 메인 화면 구조 분석하기
-실습 3 : 하이퍼링크와 이미지 연결하고 로컬 경로 적용하기
-실습 4 : 개발자 모드(F12)로 CSS 선택자와 우선순위 확인하기
-실습 5 : 네비게이션 바를 새 디자인으로 바꾸고 드롭다운 메뉴 추가하기
-실습 6 : 챔피언 카드를 수정하고 버튼까지 넣어 더 완성도 있게 만들기
-실습 7 : 모달창과 iframe을 활용해 챔피언 상세 페이지 연결하기
-실습 8 : modals 폴더와 상대 경로를 이해하고 이미지 오류 해결하기
-실습 9 : 뉴스, 챔피언, 다운로드, 로그인용 서브 페이지 구조 설계하기
-실습 10 : 다운로드 페이지를 만들며 배너, 버튼, 표까지 구현하기
-실습 11 : CSS 파일 분리와 배경 이미지 적용으로 화면을 더 깔끔하게 정리하기
-실습 12 : 반응형 시스템 사양 표를 추가하며 서브 페이지 완성도 높이기
+### PART 1. 트렌드 / 이론
+- **AI 웹 개발 트렌드**: 코드 자동 완성·디버깅·UI 제안(ChatGPT·Gemini·Copilot 등), 저코드/노코드 도구 증가 → 개발 속도 향상.
+- **Quarkus**: 클라우드 네이티브 **Java 백엔드 프레임워크**. 빠른 부팅·낮은 메모리, 컨테이너/쿠버네티스·GraalVM 네이티브 지원. (장점: Spring Boot 대비 빠른 부팅 / 단점: 빌드 시간이 김)
+
+### PART 2. 개발 환경 구축 (Quarkus)
+- **설치**: VS Code + 확장(`Quarkus Tools`, `Extension Pack for Java`) + **JDK 21**.
+- **프로젝트 실행**: 하단 터미널에서 `./mvnw quarkus:dev` (종료: `Ctrl + C` 또는 `q`). 첫 실행은 빌드 대기.
+- **전역 설정** (`application.properties`): `quarkus.http.port=8080`, `quarkus.http.static-resources.index-page=index.html`, `quarkus.test.continuous-testing=disabled`.
+- **접속 주소**: 홈 `http://localhost:8080/` (실서비스 포트는 80), 개발 보드 `http://localhost:8080/q/dev-ui/`.
+- **정적 파일 위치**: `src/main/resources/META-INF/resources/index.html` 이 홈 첫 화면.
+
+### PART 3. HTML 기본 & LOL 메인 화면 (4단계)
+- **HTML 기본 구조**: `<!DOCTYPE html>` → `<html>` → `<head>`(meta·title·link·script) + `<body>`. 기본 태그 `h1, p, ul, li, div, img, a`.
+- **메인 화면 단계별 제작**
+  1. **골격(태그/문자열)**: h1·p·ul·li로 챔피언 목록, div로 뉴스
+  2. **Bootstrap 레이아웃 + 네비바**: CDN `<link>` 연결, `navbar`, `container`/`row`/`col`, `card`
+  3. **커스텀 CSS(LOL 다크 테마)**: `<style>`로 배경 `#0a0e17`, 포인트 컬러(`accent-purple`)
+  4. **인터랙티브**: `.card:hover { transform: scale(1.05) }` + `transition`, `box-shadow`(보라색 광원), `object-fit: cover`
+
+### 핵심 정리
+- **HTML(구조) + CSS(디자인)** 의 역할 구분, Bootstrap은 class 기반 디자인.
+- 웹서버는 기본 `index.html`을 로딩, 없는 주소는 **404**.
+
+## 4주차 수업 내용 — HTML/CSS 심화 (Bootstrap·카드·모달·서브페이지)
+> 실습 1~12 요약: Bootstrap 5 연결 → 태그/class 구분 → 하이퍼링크·이미지(로컬 경로) → F12 CSS 우선순위 → 네비바/드롭다운 → 챔피언 카드+버튼 → 모달+iframe → modals 상대경로 → 서브페이지 구조 설계 → 다운로드 페이지(배너·버튼·표) → CSS 분리·배경 → 반응형 시스템 사양 표.
+
+### PART 1. Bootstrap 5 & 문서 구조
+- **Bootstrap 5**(getbootstrap.kr): class 기반 디자인 프레임워크. `<head>`에 CDN `<link>`로 연결.
+- **태그 vs class**: 태그(`<nav>`,`<div>`)=HTML5 요소, class(`navbar`,`card`)=Bootstrap 디자인 속성. (Bootstrap을 `Ctrl+/` 주석 처리하면 디자인이 풀림)
+- **`<head>` 3대 요소**: `meta`(전역 정보) · `link`(외부 자원) · `script`(JS 연결).
+
+### PART 2. 하이퍼링크 & 이미지 / 경로
+- **하이퍼링크** `<a href="url">` : `target` 4종 → `_self`(현재 탭, 기본) / `_blank`(새 탭) / `_parent` / `_top`.
+- **이미지** `<img src>` : 외부 URL 또는 **로컬**(`images/` 폴더). **상대 경로 `../`** = 한 단계 상위 폴더. (잘못된 주소 → 404)
+
+### PART 3. CSS 심화 — 선택자 우선순위 (F12)
+| 선택자 | 예시 | 우선순위 |
+|--------|------|----------|
+| 요소 | `div`, `p`, `img` | 낮음 |
+| 클래스 | `.card`, `.accent-purple` | 중간 |
+| ID | `#championGrid` | 높음 |
+| 인라인 | `style="..."` | 더 높음 |
+| `!important` | `color:white !important` | **최고** |
+
+### PART 4. 카드 · 모달 · 서브페이지
+- **그리드**: `row g-4`(컬럼 간격) / `row-cols-*`(한 행 컬럼 수, 반응형).
+- **챔피언 카드**: `card` → `card-img-top`(이미지) + `card-body`(제목/설명) + `card-footer`(상세 보기 버튼).
+- **모달 + iframe**: 버튼 `data-bs-toggle="modal"` + `data-bs-target="#modalAatrox"` ↔ 모달 `id`가 상호작용. 모달 body 안 `iframe`으로 `modals/Aatrox.html` 로드. → 이미지 깨짐은 **상대 경로 `../`** 로 해결.
+- **서브페이지**: 뉴스(게시판)·챔피언(목록)·다운로드(정보)·로그인(입력). 기존 `index.html`의 네비바/레이아웃을 **복사 재사용**.
+- **다운로드 페이지**: 히어로 배너 + Windows/Mac 버튼 + 시스템 사양 **반응형 표**(`<tr>`=행, `<td>`=셀). `<style>` → `download.css` 분리(배경 이미지·그라데이션·**Flexbox**).
 
 ![alt text](4week1.png)
 ![alt text](4week2.png)
 ![alt text](4week3.png)
 
 
-## 5주차 수업 내용
-카드에 정보와 버튼 넣기  
-버튼 누르면 뜨는 모달 구조 만들기  
-모달 안에 iframe으로 상세 페이지 넣기  
-modals 폴더 만들고 상대 경로 수정하기  
-뉴스/챔피언/다운로드/로그인 서브 페이지 구조 설계하기  
-download.html 만들어 기존 레이아웃 재사용하기  
-다운로드 배너와 버튼 추가하기  
-download.css 파일로 스타일 분리하기  
-배경 이미지와 Flexbox 적용하기  
-반응형 시스템 사양 표 추가하기  
+## 5주차 수업 내용 — 카드·모달 완성 & 서브페이지(다운로드)
+> 4주차에 이어 LOL 프로젝트의 **카드 → 모달 → 서브페이지(다운로드)** 를 완성한 주차.
+
+### 1) 챔피언 카드 & 모달
+- 카드에 정보(이름·역할·난이도)와 **상세 보기 버튼** 추가.
+- 버튼 클릭 → **모달(modal)** 팝업 → 모달 안 **`iframe`** 으로 상세 페이지(`modals/*.html`) 표시.
+- `modals/` 폴더 생성 후 이미지 경로를 **상대 경로(`../`)** 로 수정해 깨짐 해결.
+
+### 2) 서브페이지 구조 설계
+- 뉴스 / 챔피언 / **다운로드** / 로그인 페이지로 구획.
+- `download.html`은 기존 `index.html`의 **네비바·레이아웃을 재사용**(복사 후 본문만 교체).
+
+### 3) 다운로드 페이지 완성
+- 상단 **다운로드 배너(히어로)** + 다운로드 버튼.
+- `<style>` 인라인 → **`download.css` 파일로 분리**(`<link>` 연결).
+- **배경 이미지 + 그라데이션 + Flexbox** 레이아웃 적용.
+- 최하단 **반응형 시스템 사양 표** 추가(화면 크기에 따라 정렬 변화, OS별 탭).
+
+### 핵심 정리
+- **재사용**: 공통 헤더/네비바/푸터는 복사해 모든 페이지에서 사용.
+- **분리**: HTML(구조)·CSS(스타일)를 파일로 분리하면 유지보수가 쉬움.
 
 ![alt text](5week1.jpeg)
 ![alt text](5week2.png)
 ![alt text](5week3.png)
 
 
-## 6주차 수업 내용
-재할당 해야하는건 let, 상수 즉 원주율 같은(3.14)같은 애들은 const를 사용
-자바스크립트의 역할과 웹에서의 동작 방식 이해하기
-Bootstrap JS 연결 방식과 script 태그 사용법 익히기
-var, let, const 차이와 호이스팅 개념 배우기
-검색 기능 준비하기
-form, submit, preventDefault를 활용
-DOM 구조이해하기
+## 6주차 수업 내용 — 자바스크립트 기초 (입문)
+> JavaScript의 역할과 기본 문법을 익히고, 검색 기능을 위한 준비를 한 주차. (실제 검색 구현은 7주차)
+
+### 1) JavaScript의 역할
+- HTML(구조) · CSS(뷰)에 더해 JS는 **동작·연결**을 담당 (예: 버튼 클릭 시 반응).
+- 브라우저가 JS를 직접 실행(인터프리터). **Bootstrap JS** 연결은 `<script>` 태그로(보통 `<body>` 최하단).
+
+### 2) 변수 — `var` / `let` / `const`
+- **재할당이 필요하면 `let`**, 원주율(3.14)처럼 **변하지 않는 상수는 `const`**, `var`는 옛 방식.
+- **호이스팅**: 선언이 스코프 위로 끌어올려지는 동작. `let`/`const`는 선언 전 사용 시 오류(TDZ).
+
+### 3) 이벤트 & DOM (검색 기능 준비)
+- **DOM**: HTML 문서를 **트리 구조**로 표현(최상위 `document`). JS로 요소를 찾아(`getElementById`) 조작.
+- **폼 이벤트**: `form` 제출(`submit`) 시 **`preventDefault()`** 로 새로고침을 막고 JS 로직 실행.
+
+```js
+document.getElementById('searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();                 // 폼 기본 동작(새로고침) 차단
+    const q = document.getElementById('searchInput').value;
+    // ... 검색 로직 (7주차에서 구현) ...
+});
+```
+
 ![alt text](6week1.png)
 ![alt text](6week2.png)
 
@@ -159,6 +219,52 @@ function showMainScreen() {
 
 **③ 실시간 검색 결과 — "아트록스" 검색 (카테고리 사이드바 + 결과 카드)**
 ![검색 결과](screenshots/week7_03_search.png)
+
+---
+
+# 📚 중간고사 정리 (2~7주차 요약 · 시험 대비)
+
+> 실제 수업이 진행된 주차(2·3 / 4 / 5 / 6 / 7주차)의 핵심만 압축 정리.
+
+## 1) 개발 환경 · HTML 기본 (2·3주차)
+- **Quarkus**: 클라우드 네이티브 **Java 백엔드 프레임워크**. 빠른 부팅·낮은 메모리, dev 모드 라이브 리로드. 접속 주소 `http://localhost:8080/`, 정적 리소스 위치 `src/main/resources/META-INF/resources/`.
+- **HTML 기본 구조**: `<!DOCTYPE html>` → `<html>` → `<head>`(meta·title·link·script) + `<body>`(실제 콘텐츠). 이걸로 LOL 메인 화면 프로토타입 제작.
+
+## 2) HTML/CSS 심화 + Bootstrap 5 (4·5주차)
+- **Bootstrap 5**: CDN 또는 로컬 연결. 주요 컴포넌트 = 그리드(`row`/`col`), 카드(`card`), 네비게이션 바(`navbar`), 드롭다운, **모달(modal)**.
+- **태그 vs class**: 태그 = 요소의 *종류*(`<div>`,`<a>`…), class = *스타일/그룹* 지정(여러 요소 재사용).
+- **경로**: 절대경로 vs **상대경로**(`../`, `modals/`). 이미지가 안 뜨는 대부분의 원인 = 경로 오류.
+- **F12 개발자도구 / CSS 우선순위**: 인라인 스타일 > `#id` > `.class` > 태그 (그리고 `!important`가 최우선).
+- **모달 + iframe**: 버튼 클릭 → 모달 띄움 → 모달 안 `iframe`으로 상세 페이지(`modals/*.html`) 로드.
+- **CSS 분리**: HTML 안 `<style>` → 외부 `main.css`/`download.css`로 분리 후 `<link>` 연결. **배경 이미지 + Flexbox + 반응형 표**로 서브 페이지(다운로드) 완성.
+
+## 3) JavaScript 기초 + 기능 구현 (6·7주차) — ★ 가장 중요
+- **JS의 역할**: HTML(구조) · CSS(뷰)에 더해 **동작·연결**을 담당. 인터프리터 언어, 브라우저 내장 **V8 엔진**(크롬).
+- **JS 연동 4방식**: 인라인 / 내부(`<script>`) / **외부(`src=`, 권장)** / CDN(라이브러리용).
+- **`var` / `let` / `const`**
+
+  | 구분 | var | let | const |
+  |------|-----|-----|-------|
+  | 재선언 | 가능 | 불가 | 불가 |
+  | 재할당 | 가능 | 가능 | **불가** |
+  | 스코프 | 함수 | 블록 | 블록 |
+  | 호이스팅 | O(undefined) | O(TDZ) | O(TDZ) |
+
+  → 재할당 필요하면 `let`, 변하지 않는 상수는 `const`.
+- **호이스팅 / TDZ**: 선언부가 스코프 상단으로 끌어올려짐. `let`/`const`는 **TDZ**라 선언 전 접근 시 `ReferenceError`.
+- **DOM**: HTML을 **트리 구조**로 표현, 최상위 객체는 `document`. `getElementById()` 등으로 요소 접근·조작.
+- **이벤트**: `addEventListener('submit', ...)`, **`preventDefault()`**(폼 제출 시 새로고침 막기), `window.open()`.
+- **검색 기능**: `CHAMPIONS`(객체 배열) → `filter()`로 검색 → `performSearch()`(결과 표시·섹션 전환), `switchCategory()`(탭 전환), `showMainScreen()`(빈 검색어 시 복귀).
+
+## ✅ 시험 빈출 체크리스트
+- `var` / `let` / `const` 차이 (재선언·재할당·스코프) ← 단골
+- **호이스팅**과 **TDZ** 정의
+- JS 연동 4방식 & **외부 스크립트 권장 이유**(유지보수·재사용·캐시)
+- **`preventDefault()`** 의 역할
+- **DOM** 정의와 `document`
+- 상대경로 vs 절대경로 / **CSS 우선순위**
+- **객체 배열 vs 일반 배열**, `filter()` 동작
+- 모달 + `iframe` 구조, Bootstrap 주요 컴포넌트
 
 ---
 
@@ -596,6 +702,58 @@ public Response logout(@QueryParam("next") String next) {         // ?next=login
 
 **② 프로필 — 개인정보 수정(Collapse) + 비밀번호 변경 폼**
 ![회원정보 수정/비번 변경](screenshots/week13_02_profile_forms.png)
+
+---
+
+# 📚 기말고사 정리 (9~13주차 요약 · 시험 대비)
+
+> 회원관리 시스템(로그인·세션·암호화·DB·프로필)의 핵심을 압축 정리.
+
+## 1) 자료구조 & DB 연동 (9주차)
+- **V8 엔진**: 단순 인터프리터 → **다단계 JIT 컴파일러**(`Parser → AST → Ignition(바이트코드) → TurboFan(Hot Code 최적화)`). **WebAssembly(WASM)** = 고성능 처리(게임·AI), 기계어 수준.
+- **객체 배열 vs 일반 배열**: 객체 배열 `[{key:value}]`은 의미가 명확(`arr[0].name`), 필터링·확장에 유리 / 일반 배열 `[v,v]`는 단순·빠름(`includes`).
+- **다크/라이트 모드**: `classList.toggle('light-mode')` 한 줄로 전체 테마 전환.
+- **MySQL 연동(★)**: `pom.xml`에 `quarkus-jdbc-mysql`·`hibernate-orm-panache`·`rest-jackson` 추가, `application.properties`에 DB 접속·`hibernate-orm.database.generation=update`.
+  - **Panache(Active Record)**: `@Entity` + `extends PanacheEntity` → `id` 자동 + `listAll()`/`persist()`/`find()` 제공. SQL 없이 DB 조작.
+  - 3계층: **Entity(Model)** · **Resource(Controller, REST API)** · **DataSeeder(초기 데이터)**. `/champions` → DB 데이터를 **JSON** 응답.
+
+## 2) 로그인 / 로그아웃 — 세션 (10주차)
+- **웹 보안**: 세션 쿠키 탈취 = 비밀번호 없이도 로그인됨. HTTP는 **무상태(stateless)** → 서버가 세션 관리, 브라우저엔 세션 ID(쿠키)만.
+- **세션 vs 토큰(JWT)**: 세션=서버 저장(확장성↓), 토큰=클라이언트 저장(stateless).
+- **세션 구현**: `SessionConfig`(Vert.x `Router`에 `SessionHandler` 등록), `AuthResource` — `login_check`(DB 인증 → `session.put`), `after_login`(세션 없으면 차단=Forced Browsing 방지), `logout`(`session.destroy`).
+- **HTTP 상태코드**: 200(성공) / **302**(이동, 메서드 유지) / **303 See Other**(POST→GET 전환, 로그인 후 이동) / 404 / 5xx.
+- **도메인 패키지 구조**: 기능별 폴더(`champion`/`common`/`login`)로 응집도↑.
+
+## 3) 회원가입 & 암호화 (11주차)
+- **해시(단방향)**: 암호화만 가능·**복호화 불가**. 같은 입력=같은 해시. DB 유출돼도 원본 복구 불가.
+- **알고리즘**: MD5/SHA-1(취약) ❌ → **SHA-256**(적합) ✅ → bcrypt(실무, salt).
+- **클라이언트 해싱**: 브라우저 **Web Crypto API**(`crypto.subtle.digest('SHA-256')`)로 패스워드를 해시 → hidden 필드로 전송(평문 전송 X).
+- **유효성 검사(정규식)**: 아이디 `^[a-zA-Z0-9]{4,20}$`, 패스워드 `^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$`, 이메일/연락처(`^010-\d{4}-\d{4}$`).
+- **회원가입 처리**: `register_check` — 아이디·이메일 **중복 체크** 후 해시 저장. `User`에 `@Column(unique=true) email`·`phone` 추가.
+
+## 4) 회원관리 — 세션분기 & 프로필 (12주차)
+- **콘텐츠 유형**: 정적(HTML/CSS/JS/이미지)·동적(REST API)·DB·미디어. 실서비스는 파일을 **CDN/S3**에 저장, DB엔 파일명만.
+- **로그인 해시 비교 완성**: `login.js`의 `submitLogin()`이 패스워드를 SHA-256 해시 후 전송 → 서버가 해시끼리 비교(가입과 일치).
+- **메인 세션 분기(★)**: `Index.html` → **`main_index.html`** 로 변경(정적 index 자동 서빙 차단), `AuthResource.mainPage()`(`GET /`)가 세션 유무로 `main_after_login.html`(로그인) / `main_index.html`(비로그인) 반환.
+- **프로필**: `profile.html` + `Profile.js`(`fetch('/profile/info')`로 정보 표시), `User.profileImage` 컬럼. `/profile/upload` — `@RestForm FileUpload`로 확장자·크기(5MB) 검사 후 **UUID 파일명**으로 로컬 저장 + DB에 파일명.
+- **Active Record vs Data Mapper**: Panache(Active Record)=객체가 DB 로직 보유, 코드 적음 / JPA Repository(Data Mapper)=분리, 코드 많음.
+
+## 5) 회원정보 수정·비밀번호 변경 + Toast (13주차)
+- **Toast vs alert**: `alert()`는 화면 차단·버튼 필수 / **Toast**는 비방해형·자동 사라짐(실무 표준). `showToast(msg, type)` + Toast 컨테이너 HTML.
+- **Bootstrap 컴포넌트**: **Collapse**(접기/펼치기, 개인정보 수정 폼), **Tooltip**(네비바 사용자명).
+- **회원정보 수정**: `/profile/update` — 이메일 **중복 체크(본인 제외)** 후 DB 수정.
+- **비밀번호 변경**: `/profile/password` — 현재 비번 **해시 비교** → 새 해시 저장. 변경 성공 시 Toast 후 `setTimeout`으로 3.5초 뒤 **자동 로그아웃**(`logout?next=login` → `/login`). `@QueryParam("next")`로 분기.
+
+## ✅ 시험 빈출 체크리스트
+- **세션 vs 토큰**, HTTP **무상태**, 세션 쿠키의 역할
+- **HTTP 상태코드** 302 vs **303**(POST→GET), 200/404/5xx
+- **해시(SHA-256)** 가 단방향(복호화 불가)인 이유, MD5/SHA-1이 취약한 이유
+- **Panache** = Active Record, `@Entity`/`PanacheEntity`/`@Transactional`/`persist()`
+- **메인 세션 분기**를 위해 `index.html`을 왜 바꿨는가(정적 우선 인식)
+- **`@FormParam` / `@RestForm` / `@QueryParam` / `@Path` / `@Produces`** 어노테이션 역할
+- **정규식** 패스워드 규칙, 중복 체크(본인 제외) 로직
+- **Toast vs alert**, Collapse·Tooltip, `preventDefault`/`fetch`/`setTimeout`
+- **파일 업로드**: `multipart/form-data`, 확장자·크기 검증, UUID 파일명, DB엔 파일명만 저장
 
 ---
 
