@@ -14,3 +14,12 @@ function toggleTheme() {
     navbar.classList.add("navbar-dark", "bg-dark");
   }
 }
+
+// [9주차 과제2] 인라인(onclick) 방식 → 이벤트 리스너 방식으로 변경
+// 모든 페이지에서 toggle.js만 연동하면 버튼에 자동으로 클릭 이벤트가 등록된다.
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("themeToggleBtn");
+  if (btn) {
+    btn.addEventListener("click", toggleTheme);
+  }
+});

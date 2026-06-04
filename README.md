@@ -56,6 +56,10 @@ DOM 구조이해하기
 
 ## 7주차 수업 내용 — 자바스크립트 기초 & LOL 기능 구현
 
+> ## 📝 추가 설명
+> 중간에 여러 주차의 파일들이 서로 꼬여서 정리가 어려웠다.
+> 그래서 다시 처음부터 차근차근 공부하면서 7주차까지의 내용만 깔끔하게 정리한 뒤 커밋했다.
+
 
 ### PART 1. 트렌드 / 이론 (자바스크립트 개요)
 - **역할**: HTML(구조) · CSS(뷰)에 더해, 자바스크립트는 "연결과 동작"을 담당한다. (예: 버튼을 누르면 불이 켜진다)
@@ -128,8 +132,58 @@ DOM 구조이해하기
 
 ---
 
-## 📝 추가 설명
-중간에 여러 주차의 파일들이 서로 꼬여서 정리가 어려웠다.
-그래서 다시 처음부터 차근차근 공부하면서 7주차까지의 내용만 깔끔하게 정리한 뒤 커밋다.
+## 9주차 수업 내용 — JS 기능 추가 & MySQL 연동
+
+### PART 1. 트렌드 / 이론 (V8 엔진 심화 · WebAssembly)
+- **V8 엔진**: 단순 인터프리터 → **다단계 컴파일러(JIT)** 구조.
+  - `Parser → AST → Ignition(바이트코드 인터프리터) → TurboFan(Hot Code 최적화 컴파일러) → 네이티브 기계어`
+  - 자주 실행되는 코드를 감지해 최적화하므로 네이티브 대비 약 50~80% 성능까지 도달.
+- **WebAssembly(WASM)**: 비디오 코덱·물리 연산·게임 로직·AI 추론 등 고성능 처리에 사용. 기계어 수준이라 별도 최적화가 거의 필요 없고, V8에서는 `Liftoff(빠른 시작) + TurboFan(최적화)` 조합으로 실행. (예: 유니티 웹 게임)
+
+### PART 2. LOL 기능 추가 (JavaScript)
+**① 자료 구조 비교 (`js/test2.js`)**
+
+| 구분 | 객체 배열 `[{key:value}]` | 일반 배열 `[value, value]` |
+|------|--------------------------|----------------------------|
+| 데이터 의미 | 키로 의미 파악 명확 (`news[0].title`) | 인덱스 순서를 미리 약속해야 함 (`news[0]`) |
+| 접근/가공 | 조건 필터링·속성 추가에 유리 | 단순 순회·존재 확인(`includes`)이 빠름 |
+| 추천 상황 | DB 검색 결과, 게시판 글 목록 | 단순 선택지·태그·점수 목록 |
+
+**② 다크 / 라이트 모드 전환**
+- `Index.html` 네비게이션 바에 토글 버튼(`#themeToggleBtn`) 추가.
+- `css/main.css`에 `body.light-mode` 라이트 모드 색상(배경/네비/카드/히어로) 추가.
+- `js/toggle.js`의 `toggleTheme()`가 `classList.toggle('light-mode')`로 테마를 한 번에 전환하고, 버튼 텍스트(🌙 DARK ↔ ☀️ LIGHT)와 네비바 부트스트랩 클래스를 교체.
+
+### PART 3. 데이터베이스 연동 (MySQL)
+- **의존성(`pom.xml`)**: `quarkus-jdbc-mysql`(드라이버), `quarkus-hibernate-orm-panache`(ORM), `quarkus-rest-jackson`(JSON 변환).
+- **설정(`application.properties`)**: `db-kind=mysql`, `root` 계정, `jdbc:mysql://localhost:3306/lol`, `hibernate-orm.database.generation=update`(테이블 자동 생성), `log.sql=true`.
+- **백엔드 3계층 패턴** (`src/main/java/org/acme`):
+
+| 파일 | 역할 | 레이어 |
+|------|------|--------|
+| `champion/Champion.java` | `@Entity` + `extends PanacheEntity` → 테이블 매핑(id 자동) | Model |
+| `champion/ChampionResource.java` | `@Path("/champions")` GET(목록)/POST(추가) API | Controller |
+| `common/DataSeeder.java` | `@Observes StartupEvent`로 서버 시작 시 챔피언 초기 데이터 삽입 | Initializer |
+
+- **확인**: 서버 실행 후 `http://localhost:8080/champions` 에서 DB의 챔피언 목록이 **JSON**으로 응답된다. (개발자 보드: `http://localhost:8080/q/dev/`)
+
+### PART 4. 마무리 & 과제
+- ✅ **과제1 — 검색 결과 모달**: `search.js`의 챔피언 데이터에 `modalId` 속성을 추가하고, 검색 결과 카드에 `data-bs-toggle="modal"` / `data-bs-target="#modalXxx"` 버튼을 넣음. 모달이 검색 화면 위에서도 열리도록 모달 `<div>`들을 챔피언 섹션 **밖(body 하단)으로 이동**.
+- ✅ **과제2 — 이벤트 리스너 방식**: 토글 버튼을 `onclick`(인라인) → `addEventListener`(리스너) 방식으로 변경. `toggle.js`만 연동하면 자동으로 클릭 이벤트가 등록되며, **다운로드 페이지(`download.html`)에도 공통 적용**.
+
+---
+
+## 9주차 실제 실행 화면 (http://localhost:8080/)
+
+**① 라이트 모드 전환 (☀️ LIGHT)**
+![라이트 모드](screenshots/week9_01_lightmode.png)
+
+**② 검색 결과에서 챔피언 모달 열기 (과제1)**
+![검색 결과 모달](screenshots/week9_02_search_modal.png)
+
+**③ MySQL 데이터 JSON 응답 — /champions**
+![champions JSON](screenshots/week9_03_champions_json.png)
+
+---
 
 <div align="center">

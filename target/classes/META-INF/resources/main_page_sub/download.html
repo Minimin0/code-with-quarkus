@@ -19,6 +19,16 @@
         .card-img-top { height: 200px; object-fit: cover; border-radius: 10px 10px 0 0; }
         .btn-primary { background-color: #a020f0; border: none; }
         .btn-primary:hover { background-color: #800080; }
+
+        /* [9주차 과제2] 테마 토글 버튼 + 라이트 모드 (다운로드 페이지 공통 적용) */
+        #themeToggleBtn { font-size: 1.1rem; color: #fff; }
+        body.light-mode #themeToggleBtn { color: #212529; }
+        body.light-mode { background-color: #f8f9fa; color: #212529; }
+        body.light-mode .navbar { background-color: #e9ecef !important; }
+        body.light-mode .navbar .navbar-brand,
+        body.light-mode .navbar .nav-link { color: #212529 !important; }
+        body.light-mode .hero { background: linear-gradient(to bottom, #dce3ea, #f8f9fa); }
+        body.light-mode .card { background-color: #ffffff; color: #212529; border: 1px solid #dee2e6; }
     </style>
     <link rel="stylesheet" href="../css/download.css">
 </head>
@@ -51,6 +61,9 @@
       <img src="../image/logo1.jpeg" alt="로고" width="40" height="40" class="me-2">
       League of Legends
     </a>
+
+    <!-- [9주차 과제2] 다크/라이트 토글 버튼 (리스너 방식 → toggle.js에서 연결) -->
+    <button class="btn border-0" id="themeToggleBtn">🌙 DARK</button>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -168,6 +181,8 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- [9주차 과제2] 토글 스크립트 연동 (모든 페이지 공통) -->
+    <script src="../js/toggle.js"></script>
 </body>
 </html>
