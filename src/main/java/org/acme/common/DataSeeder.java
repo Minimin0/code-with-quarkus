@@ -18,7 +18,8 @@ public class DataSeeder {
             if (User.count() == 0) {
             User guest = new User();
             guest.username = "guest";
-            guest.password = "123123";
+            // [12주차] 평문 대신 SHA-256 해시값 저장 (원본 패스워드: 123qwe@@@)
+            guest.password = "7680bf06962a60f8f9b099f3c951fee6a30e53d0ff39586eb32f256418a32b20";
             guest.email = "guest@example.com"; // [11주차] 컬럼 추가
             guest.phone = "010-0000-0000";     // [11주차] 컬럼 추가
             guest.persist();

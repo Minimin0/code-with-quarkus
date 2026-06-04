@@ -41,7 +41,10 @@ function clearError(fieldId) {
     field.classList.add('is-valid');
 }
 
-// 폼 전송 → POST /login_check
-function submitLogin() {
+// [12주차] 패스워드를 SHA-256 해시로 변환 후 hidden 필드에 담아 전송
+async function submitLogin() {
+    const password = document.getElementById('passwordInput').value;
+    const hashed = await hashPassword(password); // input_sha256.js
+    document.getElementById('password').value = hashed; // 평문 대신 해시값 전송
     document.getElementById('loginForm').submit();
 }

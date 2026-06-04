@@ -119,7 +119,37 @@ DOM 구조이해하기
 
 ---
 
-## 실제 실행 화면 (http://localhost:8080/)
+## 7주차 핵심 코드 (`js/search.js`)
+```js
+// 검색 폼 submit → 새로고침 막고 검색 실행
+document.getElementById('searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    performSearch(document.getElementById('searchInput').value);
+});
+
+// 데이터에서 filter() → 결과 카드 생성 → 히어로/기존 섹션 숨기고 결과 섹션 표시
+function performSearch(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) { showMainScreen(); return; }            // [과제] 빈 검색어 → 메인 복귀
+    const champResults = CHAMPIONS.filter(c =>
+        c.name.includes(q) || c.engName.toLowerCase().includes(q) ||
+        c.role.includes(q) || c.lane.includes(q));
+    /* ...champResults / newsResults 로 결과 카드 innerHTML 생성, 카운트 표시... */
+    document.querySelector('.hero').classList.add('d-none');
+    document.querySelectorAll('section:not(#searchResults)').forEach(s => s.classList.add('d-none'));
+    document.getElementById('searchResults').style.display = 'block';
+}
+
+// [과제] 검색어가 비면 검색 결과를 닫고 메인 화면으로 복귀
+function showMainScreen() {
+    document.getElementById('searchResults').style.display = 'none';
+    document.querySelector('.hero').classList.remove('d-none');
+    document.querySelectorAll('section:not(#searchResults)').forEach(s => s.classList.remove('d-none'));
+    document.getElementById('searchInput').value = '';
+}
+```
+
+## 7주차 실제 실행 화면 (http://localhost:8080/)
 
 **① 메인 화면 — 챔피언 카드 & 상세 보기 버튼**
 ![메인 화면](screenshots/week7_01_main.png)
@@ -172,6 +202,37 @@ DOM 구조이해하기
 - ✅ **과제2 — 이벤트 리스너 방식**: 토글 버튼을 `onclick`(인라인) → `addEventListener`(리스너) 방식으로 변경. `toggle.js`만 연동하면 자동으로 클릭 이벤트가 등록되며, **다운로드 페이지(`download.html`)에도 공통 적용**.
 
 ---
+
+## 9주차 핵심 코드
+**다크/라이트 토글 (`js/toggle.js`)**
+```js
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle('light-mode');   // 클래스 토글 한 줄로 전체 테마 전환
+    const btn = document.getElementById('themeToggleBtn');
+    btn.textContent = body.classList.contains('light-mode') ? '☀️ LIGHT' : '🌙 DARK';
+}
+```
+**MySQL 연동 — 엔티티 & API (`champion/Champion.java`, `champion/ChampionResource.java`)**
+```java
+@Entity                                  // DB 테이블과 매핑
+public class Champion extends PanacheEntity {  // id 자동 + listAll()/persist() 제공
+    public String name;
+    public String role;
+    public String line;
+}
+```
+```java
+@Path("/champions")
+@Produces(MediaType.APPLICATION_JSON)
+public class ChampionResource {
+    @GET                                  // 전체 목록 → JSON 응답
+    public List<Champion> list() { return Champion.listAll(); }
+
+    @POST @Transactional                  // 새 챔피언 DB 저장
+    public void add(Champion c) { c.persist(); }
+}
+```
 
 ## 9주차 실제 실행 화면 (http://localhost:8080/)
 
@@ -231,6 +292,46 @@ org.acme/
 
 ---
 
+## 10주차 핵심 코드
+**세션 핸들러 등록 (`login/SessionConfig.java`)**
+```java
+@ApplicationScoped
+public class SessionConfig {
+    @Inject Vertx vertx;
+    public void init(@Observes Router router) {            // 세션 기능 활성화
+        router.route().handler(SessionHandler
+            .create(LocalSessionStore.create(vertx))
+            .setSessionTimeout(60 * 60 * 1000L)            // 1시간
+            .setCookieHttpOnlyFlag(true));                 // 보안 플래그
+    }
+}
+```
+**로그인 / 세션 체크 / 로그아웃 (`login/AuthResource.java`)**
+```java
+@POST @Path("/login_check") @Transactional
+public Response loginCheck(@FormParam("username") String username,
+                           @FormParam("password") String password) {
+    User user = User.findByUsername(username);                 // DB 조회
+    if (user == null || !user.password.equals(password))
+        return Response.seeOther(URI.create("/login?error=1")).build();
+    context.session().put("loginUser", username);             // 세션 저장
+    return Response.seeOther(URI.create("/after_login")).build(); // 303
+}
+
+@GET @Path("/after_login")
+public Response afterLogin() {
+    if (context.session().get("loginUser") == null)           // 세션 없으면 차단
+        return Response.seeOther(URI.create("/login")).build();
+    /* main_after_login.html 반환 */
+}
+
+@GET @Path("/logout")
+public Response logout() {
+    context.session().destroy();                              // 세션 전체 삭제
+    return Response.seeOther(URI.create("/")).build();
+}
+```
+
 ## 10주차 실제 실행 화면 (http://localhost:8080/)
 
 **① 로그인 페이지 (`/login`)**
@@ -281,6 +382,34 @@ org.acme/
 
 ---
 
+## 11주차 핵심 코드
+**SHA-256 해시 생성 (`js/input_sha256.js`)**
+```js
+// 브라우저 내장 Web Crypto API로 단방향 해시(복호화 불가)
+async function hashPassword(password) {
+    const data = new TextEncoder().encode(password);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, '0')).join('');  // 16진수 문자열
+}
+```
+**회원가입 — 중복 체크 후 해시 저장 (`login/AuthResource.java`)**
+```java
+@POST @Path("/register_check") @Transactional
+public Response registerCheck(@FormParam("username") String username,
+        @FormParam("password") String password,   // 이미 SHA-256 해시값
+        @FormParam("email") String email, @FormParam("phone") String phone) {
+    if (User.findByUsername(username) != null)     // ① 아이디 중복
+        return Response.seeOther(URI.create("/register?error=duplicate_username")).build();
+    if (User.findByEmail(email) != null)           // ② 이메일 중복
+        return Response.seeOther(URI.create("/register?error=duplicate_email")).build();
+    User u = new User();                           // ③ DB 삽입(해시 저장)
+    u.username = username; u.password = password;
+    u.email = email; u.phone = phone; u.persist();
+    return Response.seeOther(URI.create("/register_success")).build();
+}
+```
+
 ## 11주차 실제 실행 화면 (http://localhost:8080/)
 
 **① 회원가입 폼 (`/register`)**
@@ -294,6 +423,91 @@ org.acme/
 
 **④ 로그인 페이지 — 회원가입 버튼 추가 & 입력값 검증(과제)**
 ![로그인 페이지](screenshots/week11_04_login.png)
+
+---
+
+## 12주차 수업 내용 — 회원관리(로그인 암호화 체크 & 프로필 페이지)
+
+### PART 1. 트렌드 / 이론 (콘텐츠 유형 · 파일 저장)
+- HTTP Archive 2024/2025 통계: 용량은 **이미지(약 55%)·JS(약 34%)** 비중이 큼. 이미지는 **WebP/AVIF**(고해상도·저용량) 권장.
+- 콘텐츠 유형: 정적(HTML/CSS/JS/이미지) · 동적(REST API) · DB · 미디어(업로드).
+- 실서비스(카카오·네이버·당근 등)는 **파일은 클라우드/CDN(S3 등)에 저장하고 DB엔 파일명/URL만 저장**. 이번 주는 축소판으로 **서버 로컬에 이미지 저장 + DB에 파일명 저장**.
+
+### PART 2-1. 로그인 암호화 체크 (해시 비교 완성)
+- 11주차까지는 회원가입만 SHA-256 해시였고 로그인은 평문 비교라 **신규 계정 로그인이 안 되는 문제**가 있었음 → 이번 주에 해결.
+- **`login.html`**: 보이는 패스워드 입력(`passwordInput`)과 별도로, 해시값을 담는 **hidden 필드(`id="password" name="password"`)** 추가. `input_sha256.js` 연동.
+- **`js/login.js`**: `submitLogin()`을 비동기로 변경 → `hashPassword()`로 **SHA-256 해시 생성 후 hidden 필드에 담아 전송**. 서버는 해시값끼리 비교.
+- **guest 계정**: 평문 `123123` → 해시값으로 교체. `DataSeeder`도 해시 저장, 기존 DB도 `UPDATE ... LOWER(password)` 로 갱신. **로그인: `guest` / `123qwe@@@`**
+
+### PART 2-2. 메인화면 세션 체크 (로그인 상태 유지)
+- `Index.html` → **`main_index.html`** 로 이름 변경(정적 `index.html` 자동 서빙을 막고 백엔드가 `/`를 처리).
+- **`AuthResource.mainPage()` (`GET /`)**: 세션 유무에 따라 분기 — 로그인 상태면 `main_after_login.html`, 비로그인이면 `main_index.html` 반환. → 로그인 후 메인에 **프로필·로그아웃 버튼**이 유지됨.
+
+### PART 2-3. 프로필 페이지
+- **`main_after_login.html`**: 네비바에 **프로필 링크**(`/profile`) 추가.
+- **`User.java`**: `profileImage`(저장 파일명) 컬럼 추가.
+- **`profile.html` (신규)**: 프로필 사진(원형) + 개인정보 표 + 사진 업로드 폼(`multipart/form-data`).
+- **`js/Profile.js` (신규)**: `fetch('/profile/info')`로 사용자 정보를 비동기로 받아와 DOM에 출력(아이디/이메일/연락처/사진).
+- **`AuthResource` 엔드포인트 추가**
+
+| 메서드 / 경로 | HTTP | 동작 |
+|---------------|------|------|
+| `profilePage()` `/profile` | GET | 세션 체크 → DB 조회 → `profile.html` 반환(미로그인 시 `/login`) |
+| `profileInfo()` `/profile/info` | GET | 로그인 사용자 정보를 **JSON**으로 반환(미로그인 401) |
+| `profileUpload()` `/profile/upload` | POST | `@RestForm FileUpload` — 확장자(jpg/png/gif/webp)·크기(5MB) 검사 → **UUID 파일명**으로 `uploads/profile/`에 저장 → DB에 파일명 갱신 |
+
+### PART 3. 마무리 & 과제
+- ✅ **과제 — 로그인 화면 세션 중복 처리**: 이미 로그인한 상태에서 `/login` 재접속 시 새 세션이 또 생기던 문제를, `loginPage()`에서 **세션이 있으면 `/after_login`으로 자동 전환**하도록 수정(`mainPage()`의 세션 체크 재활용).
+
+---
+
+## 12주차 핵심 코드
+**로그인도 해시 후 전송 (`js/login.js`)**
+```js
+async function submitLogin() {
+    const pw = document.getElementById('passwordInput').value;
+    document.getElementById('password').value = await hashPassword(pw); // 평문 대신 해시
+    document.getElementById('loginForm').submit();                      // POST /login_check
+}
+```
+**메인 세션 분기 — `GET /` (`login/AuthResource.java`)**
+```java
+@GET @Produces(MediaType.TEXT_HTML)
+public Response mainPage() {
+    String loginUser = context.session().get("loginUser");
+    String path = (loginUser != null)
+        ? "META-INF/resources/login/main_after_login.html"   // 로그인 O
+        : "META-INF/resources/main_index.html";              // 로그인 X
+    return Response.ok(getClass().getClassLoader().getResourceAsStream(path)).build();
+}
+```
+**프로필 사진 업로드 — 검증 + UUID 저장 (`login/AuthResource.java`)**
+```java
+@POST @Path("/profile/upload") @Transactional
+@Consumes(MediaType.MULTIPART_FORM_DATA)
+public Response profileUpload(@RestForm("profileImage") FileUpload file) {
+    String ext = file.fileName().substring(file.fileName().lastIndexOf('.') + 1).toLowerCase();
+    if (!ext.matches("jpg|jpeg|png|gif|webp"))                 // 확장자 검사
+        return Response.seeOther(URI.create("/profile?error=invalid_type")).build();
+    if (file.size() > 5 * 1024 * 1024)                         // 5MB 크기 검사
+        return Response.seeOther(URI.create("/profile?error=too_large")).build();
+    String newName = UUID.randomUUID() + "." + ext;            // UUID 파일명
+    Files.copy(file.uploadedFile(), uploadDir.resolve(newName), StandardCopyOption.REPLACE_EXISTING);
+    User.findByUsername(loginUser).profileImage = newName;     // DB에 파일명 저장
+    return Response.seeOther(URI.create("/profile")).build();
+}
+```
+
+## 12주차 실제 실행 화면 (http://localhost:8080/)
+
+**① 로그인 페이지 (입력 검증 + SHA-256 해시 전송)**
+![로그인](screenshots/week12_01_login.png)
+
+**② 로그인 후 메인 — 세션 분기로 프로필·로그아웃 버튼 유지**
+![로그인 후 메인](screenshots/week12_02_main_loggedin.png)
+
+**③ 프로필 페이지 — 정보 조회(JSON) + 사진 업로드 폼**
+![프로필 페이지](screenshots/week12_03_profile.png)
 
 ---
 

@@ -119,8 +119,10 @@
     <div class="mb-3 text-start">
     <label class="form-label">패스워드</label>
     <input type="password" class="form-control" id="passwordInput"
-    name="password" placeholder="패스워드 입력" required>
+    placeholder="패스워드 입력" required>
     <div class="invalid-feedback" id="passwordMsg"></div>
+    <!-- [12주차] SHA-256 해시값을 담아 서버로 전송 -->
+    <input type="hidden" id="password" name="password">
     </div>
     <button type="button" onclick="validateAndLogin()"
     class="btn btn-primary w-100">로그인</button>
@@ -134,7 +136,9 @@
     <!---검색 결과---->
     <script src="../js/search.js"></script>
     <script src="../js/toggle.js"></script>
-    <!-- [11주차 과제] 로그인 입력값 검증 -->
+    <!-- [12주차] 패스워드 SHA-256 암호화 (hashPassword) -->
+    <script src="../js/input_sha256.js"></script>
+    <!-- [11주차 과제 → 12주차] 로그인 입력값 검증 + 해시 후 전송 -->
     <script src="../js/login.js"></script>
 </body>
 </html>
