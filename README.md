@@ -615,6 +615,12 @@ public Response profileUpload(@RestForm("profileImage") FileUpload file) {
 **③ 프로필 페이지 — 정보 조회(JSON) + 사진 업로드 폼**
 ![프로필 페이지](screenshots/week12_03_profile.png)
 
+**④ 프로필 사진 업로드 적용 — 업로드한 이미지가 프로필에 표시됨**
+![프로필 사진 적용](screenshots/week12_04_profile_photo.png)
+
+**⑤ 프로필 페이지 전체 화면 (개인정보 수정·비밀번호 변경 폼 포함)**
+![프로필 페이지](screenshots/week12_05_profile_forms.png)
+
 ---
 
 ## 13주차 수업 내용 — 회원정보 수정 / 비밀번호 변경 + Toast
@@ -641,6 +647,28 @@ public Response profileUpload(@RestForm("profileImage") FileUpload file) {
 ### PART 3. 마무리 & 과제
 - ✅ **과제 — alert 전체 Toast 교체**: `main_index.html`(로딩/무료플레이), `main_after_login.html`(로그인 성공!/무료플레이), `register.html`·`register_success.html`(페이지 로딩/가입 완료)의 alert를 모두 `showToast()`로 교체, `login.html`은 로딩 alert 제거.
 - ✅ **마무리 정리**: 중복 `window.onload` alert 제거, 네비바/스크립트 로드 순서·상대경로 점검.
+
+### PART 4. 추가 마무리 구현 (전체 페이지 정리)
+- ✅ **다크/라이트 모드 유지**: `toggle.js`에서 선택한 모드를 **`localStorage`에 저장**하고, 모든 페이지 로드 시 자동 적용 → **새로고침·페이지 이동에도 모드가 유지**된다.
+- ✅ **네비게이션 바 정리**: 불필요한 **`Disabled` 항목 제거**, 드롭다운의 빈 링크(`불법사이트`·`외부웹`, `href="#"`) 제거 → 실제 동작하는 **롤전적(op.gg)** 링크만 유지. (메인·다운로드·로그인·로그인 후 페이지 공통)
+
+**다크/라이트 모드 유지 (`js/toggle.js`)**
+```js
+function applyTheme(mode) {                       // 저장된 모드를 화면에 적용
+    document.body.classList.toggle("light-mode", mode === "light");
+    const btn = document.getElementById("themeToggleBtn");
+    if (btn) btn.textContent = mode === "light" ? "☀️ LIGHT" : "🌙 DARK";
+}
+function toggleTheme() {
+    const next = document.body.classList.contains("light-mode") ? "dark" : "light";
+    applyTheme(next);
+    localStorage.setItem("theme", next);          // 선택 모드 저장(유지)
+}
+document.addEventListener("DOMContentLoaded", function () {
+    applyTheme(localStorage.getItem("theme") || "dark");   // 페이지마다 저장값 적용
+    document.getElementById("themeToggleBtn")?.addEventListener("click", toggleTheme);
+});
+```
 
 ## 13주차 핵심 코드
 **Toast 함수 (`js/test.js`)**
@@ -700,8 +728,8 @@ public Response logout(@QueryParam("next") String next) {         // ?next=login
 **① Toast 알림 — 로그인 성공!(자동 사라지는 비방해형 알림)**
 ![Toast 알림](screenshots/week13_01_toast.png)
 
-**② 프로필 — 개인정보 수정(Collapse) + 비밀번호 변경 폼**
-![회원정보 수정/비번 변경](screenshots/week13_02_profile_forms.png)
+**② 다크/라이트 모드 유지 — 메인에서 라이트 전환 후 로그인 페이지로 이동해도 유지 (네비바 Disabled 제거됨)**
+![다크라이트 유지](screenshots/week13_03_darkmode_persist.png)
 
 ---
 

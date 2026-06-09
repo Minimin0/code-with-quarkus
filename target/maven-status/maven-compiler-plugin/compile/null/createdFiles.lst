@@ -1,7 +1,8 @@
+org/acme/login/SessionConfig.class
+org/acme/champion/ChampionResource.class
+org/acme/GreetingResource.class
 org/acme/common/DataSeeder.class
 org/acme/StartWebSocket.class
-org/acme/champion/ChampionResource.class
 org/acme/champion/Champion.class
 org/acme/login/AuthResource.class
-org/acme/GreetingResource.class
 org/acme/login/User.class
